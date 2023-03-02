@@ -21,6 +21,7 @@ Makes your AI vtuber.
 | [MusharingChatbot](https://github.com/cdfmlr/musharing_chatbot) | 基于 [ChatterBot](https://github.com/gunthercox/ChatterBot) 的简单聊天机 | [RaSan147/ChatterBot_update](https://github.com/RaSan147/ChatterBot_update) <br/> [musharing-team/chatbot_api](https://github.com/musharing-team/chatbot_api) |
 | [Emotext](https://github.com/cdfmlr/emotext)                 | 中文文本情感分析                                             | [cdfmlr/murecom-verse-1](https://github.com/cdfmlr/murecom-verse-1) |
 | [muvtuberdriver](https://github.com/cdfmlr/muvtuberdriver)   | 组装各模块，驱动整个流程                                     | -                                                            |
+| [muvtuber-proto](https://github.com/cdfmlr/muvtuber-proto)   | proto 定义                                                   |                                                              |
 
 ## 起步
 
@@ -78,8 +79,8 @@ git clone https://github.com/cdfmlr/chatgpt_chatbot.git
 cd chatgpt_chatbot
 
 poetry install
-poetry run python chatgpt/httpapi.py
-# ChatGPTChatbot http server: http://localhost:9006
+poetry run python chatgpt
+# ChatGPTChatbot gRPC server: localhost:50052
 ```
 
 4. [MusharingChatbot](https://github.com/cdfmlr/musharing_chatbot)
@@ -150,7 +151,7 @@ brew install obs
 - [ ] Live2D View & Driver：焦点控制、像官方的 Viewer 那样丰富的任意动作、表情控制（离散 -> 连续）
 - [ ] Chatbot：
   - [ ] ChatGPT 平替
-  - [ ] ChatGPT 多用户轮流访问：提高可用性
+  - [x] ChatGPT 多用户轮流访问：提高可用性
   - [ ] MusharingChatbot（ChatterBot）重新训练
 - [ ] Sayer（TTS）：不依赖于 macOS 的平替
 - [ ] 工程化：
@@ -166,7 +167,7 @@ brew install obs
 
 欢迎任何有关 Issue 问题、PR 贡献以及讨论。
 
-（以上说明仅限于本人维护的项目，如 [muvtuberdriver](https://github.com/cdfmlr/muvtuberdriver)；不包括[xfgryujk/blivechat](https://github.com/xfgryujk/blivechat)、[OBS](https://obsproject.com) 等。）
+（以上说明仅限于本人维护的项目，如 [muvtuberdriver](https://github.com/cdfmlr/muvtuberdriver)；不包括[xfgryujk/blivechat](https://github.com/xfgryujk/blivechat)、[OBS](https://obsproject.com) 等。）
 
 
 
