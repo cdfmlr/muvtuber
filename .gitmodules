@@ -1,0 +1,21 @@
+[submodule "emotext"]
+	path = emotext
+	url = https://github.com/cdfmlr/emotext.git
+[submodule "chatgpt_chatbot"]
+	path = chatgpt_chatbot
+	url = https://github.com/cdfmlr/chatgpt_chatbot.git
+[submodule "musharing_chatbot"]
+	path = musharing_chatbot
+	url = https://github.com/cdfmlr/musharing_chatbot.git
+[submodule "live2ddriver"]
+	path = live2ddriver
+	url = https://github.com/cdfmlr/live2ddriver.git
+[submodule "live2dview"]
+	path = live2dview
+	url = https://github.com/cdfmlr/live2dview.git
+[submodule "muvtuberdriver"]
+	path = muvtuberdriver
+	url = https://github.com/cdfmlr/muvtuberdriver.git
+[submodule "blivechat"]
+	path = blivechat
+	url = https://github.com/cdfmlr/blivechat.git
