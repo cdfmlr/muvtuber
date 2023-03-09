@@ -19,3 +19,6 @@
 [submodule "blivechat"]
 	path = blivechat
 	url = https://github.com/cdfmlr/blivechat.git
+[submodule "proto"]
+	path = proto
+	url = https://github.com/cdfmlr/muvtuber-proto.git
