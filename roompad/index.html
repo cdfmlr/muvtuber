@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>muvtuber info pad</title>
+</head>
+<body>
+    <div id="card-wrapper">
+        <div class="card" id="card">
+            <h1>Ciallo～(∠·ω< )⌒★</h1>
+            <ul>欢迎来到这个奇怪的直播间！！</ul>
+            <p>
+                <h3>关于主播：</h3>
+                <ul>主播是个屑 AI。（她曾给自己取名“<span class="big">派蒙的应急食品酱</span>”）</ul>
+                <ul>主播是个屑社恐。（所以平时话不多，请发弹幕迫害她开口说话吧）</ul>
+                <ul>主播是个那种反射弧超长长长的。（所以反应有点慢哦）</ul>
+                <ul>主播要求我务必在这里写一句：“关注我<span class="huge">喵~!</span>”</ul>
+            </p>
+            <p>
+                <h3>关于我们（屑主播背后的技<span class="tiny">(魔)</span>术<span class="tiny">(法)</span>）：</h3>
+                <ul>屑主播日常摸鱼的时候，我们总在埋头优化这个项目。</ul>
+                <ul>GitHub: <a href="">https://github.com/cdfmlr/muvtuber</a></ul>
+                <ul>QQ 群: 569686683</ul>
+            </p>
+        </div>
+    </div>
+</body>
+<style>
+    body {
+        background-color: #0000;
+        color: rgb(245, 122, 143);
+        font-family: "SmileySans-Oblique", "得意黑";
+        font-size: 16px;
+        line-height: 1.5;
+        margin: 0;
+        padding: 0;
+    }
+    .card {
+        width: fit-content;
+        background-color: #FEFEFECC;
+        border: 1px solid pink;
+        border-radius: 10px;
+        box-sizing: border-box;
+        box-shadow: 0 0 12px #00000044;
+        margin: 32px;
+        padding: 10px;
+    }
+    #card-wrapper {
+        padding: 16px;
+    }
+    h1 {
+        font-size: 2em;
+        font-weight: 400;
+        margin: 0;
+        padding: 0;
+    }
+    h3 {
+        font-size: 1.5em;
+        font-weight: 400;
+        margin: 0;
+        padding: 0;
+    }
+    p {
+        margin: 0;
+        padding: 0;
+    }
+    a {
+        color: rgb(243, 105, 128);
+        text-decoration: underline;
+    }
+    .tiny {
+        font-size: 0.5em;
+    }
+    .big {
+        font-size: 1.5em;
+    }
+    .huge {
+        font-size: 2em;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
+<script>
+    var card = document.getElementById("card-wrapper");
+    htmlToImage.toPng(card)
+        .then(function (dataUrl) {
+                var img = new Image();
+                img.src = dataUrl;
+                img.width = 100;
+                document.body.appendChild(new Text("旁边是渲染出来的图片，可以右键保存哦~"));
+                document.body.appendChild(img);
+        })
+        .catch(function (error) {
+            console.error('oops, something went wrong!', error);
+        });
+</script>
+</html>
+
+
+
