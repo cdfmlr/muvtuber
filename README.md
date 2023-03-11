@@ -159,7 +159,7 @@ muvtuberdriver 必须在前面所有服务正确启动后才能启动，否则�
 #git clone https://github.com/cdfmlr/muvtuberdriver.git
 cd muvtuberdriver
 
-go run . -chatgpt_access_token='eyJ***99A' -chatgpt_prompt="请扮演一个正在直播的 vtuber，之后我的输入均为用户评论，用简短的一句话回答它们" -roomid 000000 -reduce_duration=2s
+go run . -chatgpt_config='[{"version": 3, "api_key": "sk-xxx", "initial_prompt": "请扮演一个正在直播的 vtuber，之后我的输入均为用户评论，用简短的一句话回答它们"}]' -roomid 00000000 -reduce_duration=2s 
 # chatgpt_access_token: 浏览器访问https://chat.openai.com/api/auth/session获取
 # roomid 你的 b 站直播间 id，https://live.bilibili.com/000000?... 中的000000
 
@@ -207,7 +207,7 @@ cd musharing_chatbot; PYTHONPATH=$PYTHONPATH:. nohup poetry run python musharing
 cd live2ddriver; nohup go run . -shizuku localhost:9004 -verbose >> ../run-muvtuber.log 2>&1 &; cd ..
 # alias httpstatic="~/tools/httpstatic/bin/httpstatic"
 cd live2dview; nohup httpstatic -d dist/spa/ -l :9000 >> ../run-muvtuber.log 2>&1 &; cd ..
-cd muvtuberdriver; nohup go run . -chatgpt_access_token='eyJ***99A' -chatgpt_prompt="请扮演一个正在直播的 vtuber，之后我的输入均为用户评论，用简短的一句话回答它们" -roomid 000000 -reduce_duration=2s >> ../run-muvtuber.log 2>&1 &; cd ..
+cd muvtuberdriver; nohup go run . -chatgpt_config='[{"version": 3, "api_key": "sk-xxx", "initial_prompt": "请扮演一个正在直播的 vtuber，之后我的输入均为用户评论，用简短的一句话回答它们"}]' -roomid 00000000 -reduce_duration=2s  >> ../run-muvtuber.log 2>&1 &; cd ..
 # 然后就是开 OBS，推流开播了。
 ```
 
