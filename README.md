@@ -7,6 +7,7 @@ Makes your AI vtuber.
 ![obs](attachments/obs.png)
 
 - 不定期的测试直播：http://live.bilibili.com/26949229
+- QQ 交流群：569686683
 - 介绍文章：[知乎 - 写个AI虚拟主播：看懂弹幕，妙语连珠，悲欢形于色，以一种简单的实现](https://zhuanlan.zhihu.com/p/609878670)
 
 ## 项目构成
