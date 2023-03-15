@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>muvtuber info pad</title>
+</head>
+<body>
+    <div id="card-wrapper">
+        <div class="card" id="card">
+            <h2>Ciallo～(∠·ω< )⌒★</h2>
+			<ul><span class="big">晚上好</span>。感谢你从忙碌的一天中脱身。</ul>
+			<ul>睡个好觉有时似乎遥不可及，但完全没有关系哦。</ul>
+			<ul><span class="big">派蒙的应急食品酱</span>会一直在这里陪你的。</ul>
+			<ul>一起来听些舒缓的音乐，为焦虑不堪的大脑按下重置键吧。</ul>
+            <p>
+                <h4>关于主播：</h4>
+                <ul>主播是个乐于聆听的 AI。（她给自己取名“<span class="big">派蒙的应急食品酱</span>”）</ul>
+                <ul>她平时话不多，但如果你有话堵在心里，请务必发弹幕和她聊聊呢。</ul>
+                <ul>主播要求我务必在这里写一句：“关注我<span class="big">喵~!</span>”——希望是在睡醒了的明天早上。</ul>
+				<ul><span class="tiny">也欢迎白天再来直播间玩哦，主播会用大活跃欢迎你的！</span></ul>
+            </p>
+            <p>
+                <h4>关于我们（主播背后的开源技术支持）：</h4>
+                <ul>GitHub: <a href="">https://github.com/cdfmlr/muvtuber</a></ul>
+                <ul>QQ 群: 569686683</ul>
+            </p>
+			<p>（深夜版测试运行，可能有很多bug，比如发弹幕主播不理不睬，我们会尽快优化的）</p>
+        </div>
+    </div>
+</body>
+<style>
+    body {
+        background-color: #0000;
+        color: rgb(137, 194, 255);
+        font-family: "SmileySans-Oblique", "得意黑";
+        font-size: 16px;
+        line-height: 1.5;
+        margin: 0;
+        padding: 0;
+    }
+    .card {
+        width: fit-content;
+        background-color: #67675ACC;
+        border-radius: 10px;
+        box-sizing: border-box;
+        box-shadow: 0 0 12px #00000044;
+        margin: 32px;
+        padding: 10px;
+    }
+    #card-wrapper {
+        padding: 16px;
+    }
+    h1 {
+        font-size: 2em;
+        font-weight: 400;
+        margin: 0;
+        padding: 0;
+    }
+    h3 {
+        font-size: 1.5em;
+        font-weight: 400;
+        margin: 0;
+        padding: 0;
+    }
+    p {
+        margin: 0;
+        padding: 0;
+    }
+    a {
+        color: rgb(137, 194, 255);
+        text-decoration: underline;
+    }
+    .tiny {
+        font-size: 0.5em;
+    }
+    .big {
+        font-size: 1.5em;
+    }
+    .huge {
+        font-size: 2em;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
+<script>
+    var card = document.getElementById("card-wrapper");
+    htmlToImage.toPng(card)
+        .then(function (dataUrl) {
+                var img = new Image();
+                img.src = dataUrl;
+                img.width = 100;
+                document.body.appendChild(new Text("旁边是渲染出来的图片，可以右键保存哦~"));
+                document.body.appendChild(img);
+        })
+        .catch(function (error) {
+            console.error('oops, something went wrong!', error);
+        });
+</script>
+</html>
+
+
+
