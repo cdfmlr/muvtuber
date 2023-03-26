@@ -1,0 +1,71 @@
+version: '3'
+services:
+  blivechat:
+    image: cdfmlr/muvtuber-blivechat:v1.6.1-muvtb.1
+    build: ./blivechat/
+    ports:
+      - "127.0.0.1:51060:12450"
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    networks:
+      - default
+  emotext:
+    image: cdfmlr/muvtuber-emotext:v0.0.1
+    build: ./emotext/
+    ports:
+      - "127.0.0.1:51061:9003"
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+  chatgpt_chatbot:
+    image: cdfmlr/muvtuber-chatgpt_chatbot:v0.0.1
+    build: ./chatgpt_chatbot/
+    ports:
+      - "127.0.0.1:51052:50052"
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    networks:
+      - default
+    environment:
+      # 192.168.5.2 是我的 docker vm 访问宿主机的 ip
+      # 需要根据每个人的情况具体设置。
+      - HTTP_PROXY=http://192.168.5.2:1000
+      - HTTPS_PROXY=http://192.168.5.2:1000
+  musharing_chatbot:
+    image: cdfmlr/muvtuber-musharing_chatbot:v0.0.1
+    build: ./musharing_chatbot/
+    ports:
+      - "127.0.0.1:51051:50051"
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+  live2ddriver:
+    image: cdfmlr/muvtuber-live2ddriver:v0.0.1
+    build: ./live2ddriver/
+    ports:
+      - "127.0.0.1:51071:9001"
+      - "127.0.0.1:51072:9002"
+      - "127.0.0.1:51074:9004"
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    links:
+      - emotext
+    environment:
+      - EMOTEXT_SERVER=http://emotext:9003
+    depends_on:
+      - emotext
+  live2dview:
+    image: cdfmlr/muvtuber-live2dview:v0.0.1
+    build: ./live2dview/
+    ports:
+      - "127.0.0.1:51070:80"
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+networks:
+  default:
+    driver: bridge
+
