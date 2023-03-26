@@ -27,7 +27,51 @@ Makes your AI vtuber.
 | [muvtuberdriver](https://github.com/cdfmlr/muvtuberdriver)   | 组装各模块，驱动整个流程                                     | -                                                            |
 | [muvtuber-proto](https://github.com/cdfmlr/muvtuber-proto)   | proto 定义                                                   |                                                              |
 
-## 起步
+## 快速开始
+
+Docker 化终于有进展了！
+
+目前绝大多数模块都可以在 Docker 中运行，只剩 muvtuberdriver ，因为耦合了依赖于 macOS 的 Sayer，所以必须在 macOS 本机运行。
+
+总之现在只需要几个命令即可启动整个项目：
+
+```sh
+# 拉取代码
+git clone --recursive https://github.com/cdfmlr/muvtuber.git
+cd muvtuber
+
+# 修改配置（请用你喜欢的任意编辑器）
+vim docker-compose.yml
+# 按照你的实际情况修改 HTTP_PROXY、HTTPS_PROXY 的值
+# 如果不需要，直接删掉就行。
+
+# 启动各种服务
+# 首次运行需要 build 各种镜像，耗时较长，并且请确保网络能够访问 Docker Hub、GitHub
+# 之后我可能会把打包好的镜像上传，到时候直接 pull 就行了。
+docker compose up -d
+# docker compose logs -f  # 查看日志
+
+# 启动 muvtuberdriver
+cd muvtuberdriver
+COOLDOWN_INTERVAL='5s' nohup go run . \
+    -textinhttp=':51080' \
+    -live2d_msg_fwd='http://localhost:51072/live2d' \
+    -roomid 26949229 \
+    -reduce_duration=5s \
+    -blivedm='ws://localhost:51060/api/chat' \
+    -mchatbot='localhost:51051' \
+    -chatgpt='localhost:51052' \
+    -live2ddrv='http://localhost:51074/driver' \
+    -chatgpt_config='[{"version": 3, "api_key": "sk-xxx", "initial_prompt": "You are Shizuku, a cute vtuber live streaming"}]' >> ../run-muvtuber-docker.log 2>&1 &
+# tail -f ../run-muvtuber-docker.log  # 查看日志
+```
+
+然后就可以 OBS 接入各个界面，然后推流了。下面有详细帮助，但注意端口不一样：
+
+- Live2DView: 9000 -> 51070
+- Blivechat: 12450 -> 51060
+
+## 配置开发环境
 
 （首次使用，毋必按照如下步骤走一边，不能直接看后面的部署一节）
 
@@ -68,7 +112,7 @@ poetry config virtualenvs.in-project true  # 只是个人的保守偏好
 git clone --recursive https://github.com/cdfmlr/muvtuber.git
 ```
 
-接下来编译运行各个模块（Docker 仍不可用，需手动做散装服务编排）可以预先开 7 个终端页，然后：
+接下来编译运行各个模块，可以预先开 7 个终端页，然后：
 
 1. [blivechat](https://github.com/cdfmlr/blivechat/tree/muvtuber)
 
@@ -183,6 +227,7 @@ brew install obs
 给新手的 OBS 配置详解：
 
 - Live2DView：来源 > `+` > 浏览器 > 新建 > URL: http://localhost:9000/#/
+  - 注意把「通过 OBS 控制音频」勾上哦，然后把那条声音关掉，不然有机会听到可爱捏鬼畜日语。
 - blivechat：来源 > `+` > 浏览器 > 新建 > URL: 
   - 先用浏览器打开 http://localhost:12450
   - 首页 > 房间号：设置为你的房间号 > 进入房间
@@ -196,7 +241,7 @@ brew install obs
 
 ## 部署
 
-（首次使用，毋必按照前面步骤走一边，不能直接用下面的）
+> 推荐使用前文的 docker compose 方式，本节的散装方式不推荐了。
 
 按照上面步骤走过一次之后就可以比较方便地再启动了：
 
@@ -212,8 +257,6 @@ cd muvtuberdriver; nohup go run . -chatgpt_config='[{"version": 3, "api_key": "s
 # 然后就是开 OBS，推流开播了。
 ```
 
-懒得写 Makefile 或者 sh 脚本了。总之先这样凑合一下吧。之后还要重构成 Docker 的，到时候再一起加 make。
-
 ## TODO
 
 - [ ] 文档：各项目的 README、文档
@@ -222,12 +265,12 @@ cd muvtuberdriver; nohup go run . -chatgpt_config='[{"version": 3, "api_key": "s
 - [ ] Live2D View & Driver：焦点控制、像官方的 Viewer 那样丰富的任意动作、表情控制（离散 -> 连续）
 - [ ] Chatbot：
   - [ ] ChatGPT 平替
-  - [x] ChatGPT 多用户轮流访问：提高可用性
-  - [ ] MusharingChatbot（ChatterBot）重新训练
+  - [x] ~~ChatGPT 多用户轮流访问：提高可用性~~ 换成 API 了。
+  - [x] ~~MusharingChatbot（ChatterBot）重新训练~~ 计划用 T5 替换基础模型。
 - [ ] Sayer（TTS）：不依赖于 macOS 的平替
 - [ ] 工程化：
-  - [ ] 全部内部接口 => gRPC
-  - [ ] 散装微服务 => 容器编排
+  - [ ] 全部内部接口 => gRPC （已部分实现）
+  - [ ] 散装微服务 => 容器编排 （已部分实现）
 - [ ] 一个 muvtuber 出道介绍视频：匿名 m
 - [ ] Filter：优先 + 排队，不要直接扔，存着，词穷的时候别冷场
 - [ ] ……
