@@ -22,3 +22,9 @@
 [submodule "proto"]
 	path = proto
 	url = https://github.com/cdfmlr/muvtuber-proto.git
+[submodule "externalsayer"]
+	path = externalsayer
+	url = https://github.com/cdfmlr/externalsayer.git
+[submodule "audioview"]
+	path = audioview
+	url = https://github.com/cdfmlr/audioview.git
