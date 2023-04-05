@@ -65,6 +65,18 @@ services:
     dns:
       - 1.1.1.1
       - 8.8.8.8
+  externalsayer:
+    image: cdfmlr/muvtuber-externalsayer:v0.0.1
+    build: ./externalsayer/
+    ports:
+      - "127.0.0.1:51065:50010"
+    volumes:
+      - ./externalsayer/config:/app/config
+  audioview:
+    image: cdfmlr/muvtuber-audioview:v0.0.1
+    build: ./audioview/
+    ports:
+      - "51082:80"
 networks:
   default:
     driver: bridge
