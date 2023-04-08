@@ -1,5 +1,8 @@
 *.log
 muv*.bak
+my-configs
+my-docker-compose.yml
+example-docker-compose.yml
 
 ### https://github.com/github/gitignore/blob/main/Global/macOS.gitignore
 # General

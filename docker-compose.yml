@@ -71,12 +71,26 @@ services:
     ports:
       - "127.0.0.1:51065:50010"
     volumes:
-      - ./externalsayer/config:/app/config
+      - ./configs/externalsayer:/app/config
   audioview:
     image: cdfmlr/muvtuber-audioview:v0.0.1
     build: ./audioview/
     ports:
       - "51082:80"
+  muvtuberdriver:
+    image: cdfmlr/muvtuber-muvtuberdriver:v0.0.1
+    build: ./muvtuberdriver/
+    ports:
+      - "127.0.0.1:51080:51080"
+      - "127.0.0.1:51081:51081"
+    volumes:
+      - ./configs/muvtuberdriver:/app/config
+    depends_on:
+      - blivechat
+      - live2ddriver
+      - musharing_chatbot
+      - chatgpt_chatbot
+      - externalsayer
 networks:
   default:
     driver: bridge

@@ -1,0 +1,9 @@
+SrvAddr: "localhost:50010"
+EnabledSayer: "azure"
+AzureSayer:
+  SpeechKey: "your-key"
+  SpeechRegion: "eastus"
+  FormatMicrosoft: "audio-16khz-32kbitrate-mono-mp3"
+  FormatMimeSubtype: "mp3"
+  Roles:
+    "default": '<speak version="1.0" xml:lang="zh-CN"><voice name="zh-CN-XiaoxiaoNeural">{{.}}</voice></speak>'
