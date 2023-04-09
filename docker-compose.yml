@@ -1,7 +1,7 @@
 version: '3'
 services:
   blivechat:
-    image: cdfmlr/muvtuber-blivechat:v1.6.1-muvtb.1
+    image: cdfmlr/muvtuber-blivechat:v1.6.1-muvtb.2
     build: ./blivechat/
     ports:
       - "127.0.0.1:51060:12450"
@@ -19,7 +19,7 @@ services:
       - 1.1.1.1
       - 8.8.8.8
   chatgpt_chatbot:
-    image: cdfmlr/muvtuber-chatgpt_chatbot:v0.0.1
+    image: cdfmlr/muvtuber-chatgpt_chatbot:v0.0.2
     build: ./chatgpt_chatbot/
     ports:
       - "127.0.0.1:51052:50052"
@@ -42,7 +42,7 @@ services:
       - 1.1.1.1
       - 8.8.8.8
   live2ddriver:
-    image: cdfmlr/muvtuber-live2ddriver:v0.0.1
+    image: cdfmlr/muvtuber-live2ddriver:v0.0.2
     build: ./live2ddriver/
     ports:
       - "127.0.0.1:51071:9001"
@@ -66,7 +66,7 @@ services:
       - 1.1.1.1
       - 8.8.8.8
   externalsayer:
-    image: cdfmlr/muvtuber-externalsayer:v0.0.1
+    image: cdfmlr/muvtuber-externalsayer:v0.0.2
     build: ./externalsayer/
     ports:
       - "127.0.0.1:51065:50010"
@@ -78,7 +78,7 @@ services:
     ports:
       - "51082:80"
   muvtuberdriver:
-    image: cdfmlr/muvtuber-muvtuberdriver:v0.0.1
+    image: cdfmlr/muvtuber-muvtuberdriver:v0.0.2
     build: ./muvtuberdriver/
     ports:
       - "127.0.0.1:51080:51080"
