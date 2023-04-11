@@ -71,8 +71,6 @@ docker compose up -d
 # docker compose logs -f  # 查看日志（Ctrl+C 停止）
 ```
 
-**已知问题**：运行完 `docker compose up -d` 然后 `docker compose ps -a` 或者看日志*可能*发现，muvtuberdriver 错误退出了。这是个 bug，详见 [#27](https://github.com/cdfmlr/muvtuber/issues/27)。要根治这个问题需要完成一个历史遗留的重构。但因为现在进入 v0.3.1 的 freeze 了，所以留在 v0.3.2 解决这个问题。。总之现在手动重启一下这个服务即可：
-
 ```sh
 docker compose restart muvtuberdriver
 ```
