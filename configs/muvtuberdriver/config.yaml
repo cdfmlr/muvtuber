@@ -9,8 +9,10 @@ live2d:
     forwarder: http://live2ddriver:9002/live2d
 chatbot:
     musharing:
+        disabled: false
         server: musharing_chatbot:50051
     chatgpt:
+        disabled: false
         server: chatgpt_chatbot:50052
         configs:
             - version: 3
