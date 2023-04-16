@@ -80,7 +80,46 @@ docker compose restart muvtuberdriver
    - 语音 AudioView：`http://127.0.0.1:51082/?controller=ws://127.0.0.1:51081/`
    - 弹幕 Blivechat：先用浏览器打开 http://localhost:12450，按需配置，然后复制粘贴链接和样式。
 
-## OBS 配置详解
+## 配置详解
+
+### externalsayer 配置详解
+
+> 这里将配置使用免费、高质量的 Azure 的 TTS 服务。（目前也只支持这一种。）
+> 该服务的介绍: 
+> https://azure.microsoft.com/zh-cn/products/cognitive-services/text-to-speech/
+
+这一块的配置在 `configs/externalsayer/config.yaml` 中：
+
+```yaml
+SrvAddr: "localhost:50010"
+EnabledSayer: "azure"
+AzureSayer:
+  SpeechKey: "your-key"
+  SpeechRegion: "eastus"
+  FormatMicrosoft: "audio-16khz-32kbitrate-mono-mp3"
+  FormatMimeSubtype: "mp3"
+  Roles:
+    "default": '<speak version="1.0" xml:lang="zh-CN"><voice name="zh-CN-XiaoxiaoNeural">{{.}}</voice></speak>'
+```
+
+你需要更改：SpeechKey, SpeechRegion 以及 Roles。
+
+- SpeechKey, SpeechRegion： 你在 Azure 上申请的 TTS 服务的 key 和 region。
+   - 具体的申请流程可以参考文档：[快速入门：将文本转换为语音](https://learn.microsoft.com/zh-CN/azure/cognitive-services/speech-service/get-started-text-to-speech)
+- Roles：`<voice name="xx-XX-Xxx">`这里的 name 应该填写 voice，即“发音人”的名字。具体的列表可以通过以下命令获取：
+
+```sh
+curl https://eastus.tts.speech.microsoft.com/cognitiveservices/voices/list --header 'Ocp-Apim-Subscription-Key: xxx'
+```
+
+我把请求的结果格式化放到了这个文件里，方便查找：[`externalsayer/azuresayer/voices
+/voices-list.json`](https://github.com/cdfmlr/externalsayer/blob/23e32a07de224d6ac19cf3aee0575a3e81e9836a/azuresayer/voices/voices-list.json)。
+
+你可以在网页上的「[Speech Studio](https://aka.ms/speechstudio/voicegallery)」里试听、选择声音。然后在文件里找到对应 voice 的 `"ShortName": "xx-XX-Xxx"` 填写到 `<voice name="xx-XX-Xxx">`。
+
+🌟 更推荐的一种方式是，在「[Speech Studio](https://aka.ms/speechstudio/voicegallery)」中随便写点内容，选择声音让它说，并微调各种参数，满意之后，把 SSML 导出出来，把内容替换为 `{{.}}`，去掉换行（我写了个脚本帮助做这件事，[可以点这里找到](https://github.com/cdfmlr/externalsayer/tree/23e32a07de224d6ac19cf3aee0575a3e81e9836a/azuresayer/voices)）写到配置里。
+
+###  OBS 配置详解
 
 给新手的 OBS 配置详解：
 
@@ -275,6 +314,48 @@ brew install obs
 ## 部署
 
 > 使用前文的 docker compose 方式部署。不再提供散装微服务的部署文档了。
+
+## Troubleshooting  
+
+### docker compose up 构建 musharing_chatbot 镜像时 ProxyError
+
+如果出现 ProxyError，或者：
+
+- Cannot connect to proxy.
+- Name or service not known.
+
+需要修改 `musharing_chatbot/Dockerfile` 中的代理设置。
+
+```docker
+# TODO: modify port 1000 to your own port to your local proxy
+RUN	HTTPS_PROXY=http://host.docker.internal:1000 poetry run python -m spacy download en_core_web_sm
+```
+
+这个东西必须访问 GitHub，如果你的网络环境不允许直接访问 GitHub，可以使用代理。如果你可以直接访问 GitHub（你用旁路由也算），可以删除 `HTTPS_PROXY=http://host.docker.internal:1000`。
+
+### 启动后 chatgpt_chatbot 一直出现网络问题
+
+查看日志发现：
+
+```
+...
+muvtuber-chatgpt_chatbot-1    |     raise ProxyError(e, request=request)
+muvtuber-chatgpt_chatbot-1    | requests.exceptions.ProxyError: HTTPSConnectionPool(host='openaipublic.blob.core.windows.net', port=443): Max retries exceeded with url: /encodings/cl100k_base.tiktoken (Caused by ProxyError('Cannot connect to proxy.', NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f968bfdbac0>: Failed to establish a new connection: [Errno -2] Name or service not known')))
+```
+
+需要在 `docker-compose.yml` 中修改代理配置：
+
+```yaml
+  chatgpt_chatbot:
+    ...
+    environment:
+      - HTTP_PROXY=http://host.docker.internal:10809
+      - HTTPS_PROXY=http://host.docker.internal:10809
+```
+
+如果你的网络环境不允许直接访问 OpenAI 的 API，可以使用代理。如果你可以直接访问 ChatGPT（你用旁路由也算），需要删除两行配置。
+
+如果配置后，仍然有 `Name or service not known` 的错误，可以尝试通过 Docker Desktop 的 `settings-resources-proxies` 写宿主机的 IP（就是宿主机以太网下的本地 IPv4 地址）。（感谢 [@RAINighty](https://github.com/RAINighty) 提供的解决方案，详见 https://github.com/cdfmlr/muvtuber/issues/30 的讨论）
 
 ## FAQ
 

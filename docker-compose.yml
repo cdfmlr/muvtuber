@@ -4,59 +4,45 @@ services:
     image: cdfmlr/muvtuber-blivechat:v1.6.1-muvtb.2
     build: ./blivechat/
     ports:
-      - "127.0.0.1:51060:12450"
+      - "51060:12450"
     dns:
       - 1.1.1.1
       - 8.8.8.8
-    networks:
-      - default
     restart: unless-stopped
   emotext:
     image: cdfmlr/muvtuber-emotext:v0.0.1
     build: ./emotext/
     ports:
-      - "127.0.0.1:51061:9003"
-    dns:
-      - 1.1.1.1
-      - 8.8.8.8
+      - "51061:9003"
     restart: unless-stopped
   chatgpt_chatbot:
     image: cdfmlr/muvtuber-chatgpt_chatbot:v0.0.2
     build: ./chatgpt_chatbot/
     ports:
-      - "127.0.0.1:51052:50052"
+      - "51052:50052"
     dns:
       - 1.1.1.1
       - 8.8.8.8
-    networks:
-      - default
     environment:
-      # 192.168.5.2 是我的 docker vm 访问宿主机的 ip
-      # 需要根据每个人的情况具体设置。
-      - HTTP_PROXY=http://192.168.5.2:1000
-      - HTTPS_PROXY=http://192.168.5.2:1000
+      # 本地代理的地址：需要根据每个人的情况具体设置
+      # host.docker.internal 是 docker desktop 默认带有的访问宿主机的域名，
+      # 但不一定有效，例如我的 docker vm 访问宿主机的 ip 需要用 192.168.5.2
+      - HTTP_PROXY=http://host.docker.internal:1000
+      - HTTPS_PROXY=http://host.docker.internal:1000
     restart: unless-stopped
   musharing_chatbot:
-    image: cdfmlr/muvtuber-musharing_chatbot:v0.0.1
+    image: cdfmlr/muvtuber-musharing_chatbot:v0.0.2
     build: ./musharing_chatbot/
     ports:
-      - "127.0.0.1:51051:50051"
-    dns:
-      - 1.1.1.1
-      - 8.8.8.8
+      - "51051:50051"
     restart: unless-stopped
   live2ddriver:
     image: cdfmlr/muvtuber-live2ddriver:v0.0.2
     build: ./live2ddriver/
     ports:
-      - "127.0.0.1:51071:9001"
-      - "127.0.0.1:51072:9002"
-      - "127.0.0.1:51074:9004"
-    dns:
-      - 1.1.1.1
-      - 8.8.8.8
-    links:
-      - emotext
+      - "51071:9001"
+      - "51072:9002"
+      - "51074:9004"
     environment:
       - EMOTEXT_SERVER=http://emotext:9003
     depends_on:
@@ -66,16 +52,13 @@ services:
     image: cdfmlr/muvtuber-live2dview:v0.0.1
     build: ./live2dview/
     ports:
-      - "127.0.0.1:51070:80"
-    dns:
-      - 1.1.1.1
-      - 8.8.8.8
+      - "51070:80"
     restart: unless-stopped
   externalsayer:
     image: cdfmlr/muvtuber-externalsayer:v0.0.2
     build: ./externalsayer/
     ports:
-      - "127.0.0.1:51065:50010"
+      - "51065:50010"
     volumes:
       - ./configs/externalsayer:/app/config
     restart: unless-stopped
@@ -86,11 +69,11 @@ services:
       - "51082:80"
     restart: unless-stopped
   muvtuberdriver:
-    image: cdfmlr/muvtuber-muvtuberdriver:v0.0.3
+    image: cdfmlr/muvtuber-muvtuberdriver:v0.0.6
     build: ./muvtuberdriver/
     ports:
-      - "127.0.0.1:51080:51080"
-      - "127.0.0.1:51081:51081"
+      - "51080:51080"
+      - "51081:51081"
     volumes:
       - ./configs/muvtuberdriver:/app/config
     depends_on:
@@ -100,7 +83,4 @@ services:
       - chatgpt_chatbot
       - externalsayer
     restart: unless-stopped
-networks:
-  default:
-    driver: bridge
 
