@@ -10,6 +10,8 @@ Makes your AI vtuber.
 - QQ 交流群：569686683
 - 介绍文章：[知乎 - 写个AI虚拟主播：看懂弹幕，妙语连珠，悲欢形于色，以一种简单的实现](https://zhuanlan.zhihu.com/p/609878670)
 
+[TOC]
+
 ## 项目构成
 
 ![muvtuber-impl](attachments/muvtuber-impl.png)
@@ -43,7 +45,11 @@ git clone --recursive https://github.com/cdfmlr/muvtuber.git
 cd muvtuber
 ```
 
-2. 修改配置：
+⚠️ 由于使用了 git 子模块，一定要递归拉取，不能下载 zip，或不带 `--recursive` 参数的 clone。
+
+🚧 默认的 main 分支是开发中的最新版本，不保证能运行。请使用打了 tag 个版本。（今天有点忙，有时间再写详细教程哈。如果你会的话，可以帮我修改，直接 PR 就行。）
+
+2. 修改配置：（详见 [配置详解](#配置详解)）
 
 ```sh
 vim docker-compose.yml
@@ -71,16 +77,44 @@ docker compose up -d
 # docker compose logs -f  # 查看日志（Ctrl+C 停止）
 ```
 
-```sh
-docker compose restart muvtuberdriver
-```
+（如果遇到问题，可以先看一看 [Troubleshooting](#Troubleshooting)）
 
 4. 配置 OBS，开始直播：（下面三个都是新建浏览器源）
    - 主播 Live2DView：`http://localhost:51070/#/?driver=ws://localhost:51071/live2d`
    - 语音 AudioView：`http://127.0.0.1:51082/?controller=ws://127.0.0.1:51081/`
-   - 弹幕 Blivechat：先用浏览器打开 http://localhost:12450，按需配置，然后复制粘贴链接和样式。
+   - 弹幕 Blivechat：先用浏览器打开 http://localhost:51060，按需配置，然后复制粘贴链接和样式。
 
 ## 配置详解
+
+### 网络环境配置
+
+如果你的网络环境不好，直连 GitHub 和 ChatGPT 有困难，就需要做一些代理配置。
+
+> 预先条件：你拥有一个可以让网络变好的魔法道具（行业黑话：代理）。
+
+在你的代理设置中（可能还藏的比较深，如高级设置中），可以找到类似「本机 http 监听端口」之类的值，把这个端口填到：
+
+- `musharing_chatbot/Dockerfile` 中：
+
+  ```dockerfile
+  HTTPS_PROXY=http://host.docker.internal:1000
+  ```
+
+  替换掉 `1000`
+
+- `docker-compose.yml` 中：
+
+  ```yaml
+    chatgpt_chatbot:
+      ...
+      environment:
+        - HTTP_PROXY=http://host.docker.internal:1000
+        - HTTPS_PROXY=http://host.docker.internal:1000
+  ```
+
+  替换掉 `1000`
+
+（当然你也可以反过来，把代理软件的端口改成 1000 哈哈，但不推荐，我怕有冲突，或者给你造成其他问题）
 
 ### externalsayer 配置详解
 
@@ -139,6 +173,48 @@ curl https://eastus.tts.speech.microsoft.com/cognitiveservices/voices/list --hea
   - 在开始直播前，控制中心 > 声音> 右边 AirPlay 图标 > 选 BlackHole。
   - 然后电脑输出的声音就会 -> BlackHole -> OBS。
 - B 站推流：设置（Preferences）> 直播 > 服务：选 `Bilibili Live ...`，推流码填「B 站首页 > 头像 > 推荐服务 > 直播中心 > 左侧“我的直播间”> 填好直播分类、房间标题 > 开始直播，然后会显示的串流密钥」
+
+## Troubleshooting 
+
+### 💥 docker compose up 构建 musharing_chatbot 镜像时 ProxyError
+
+如果出现 ProxyError，或者：
+
+- Cannot connect to proxy.
+- Name or service not known.
+
+需要修改 `musharing_chatbot/Dockerfile` 中的代理设置。
+
+```docker
+# TODO: modify port 1000 to your own port to your local proxy
+RUN	HTTPS_PROXY=http://host.docker.internal:1000 poetry run python -m spacy download en_core_web_sm
+```
+
+这个东西必须访问 GitHub，如果你的网络环境不允许直接访问 GitHub，可以使用代理。如果你可以直接访问 GitHub（你用旁路由也算），可以删除 `HTTPS_PROXY=http://host.docker.internal:1000`。
+
+### 💥 启动后 chatgpt_chatbot 一直出现网络问题
+
+查看日志发现：
+
+```
+...
+muvtuber-chatgpt_chatbot-1    |     raise ProxyError(e, request=request)
+muvtuber-chatgpt_chatbot-1    | requests.exceptions.ProxyError: HTTPSConnectionPool(host='openaipublic.blob.core.windows.net', port=443): Max retries exceeded with url: /encodings/cl100k_base.tiktoken (Caused by ProxyError('Cannot connect to proxy.', NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f968bfdbac0>: Failed to establish a new connection: [Errno -2] Name or service not known')))
+```
+
+需要在 `docker-compose.yml` 中修改代理配置：
+
+```yaml
+  chatgpt_chatbot:
+    ...
+    environment:
+      - HTTP_PROXY=http://host.docker.internal:10809
+      - HTTPS_PROXY=http://host.docker.internal:10809
+```
+
+如果你的网络环境不允许直接访问 OpenAI 的 API，可以使用代理。如果你可以直接访问 ChatGPT（你用旁路由也算），需要删除两行配置。
+
+如果配置后，仍然有 `Name or service not known` 的错误，可以尝试通过 Docker Desktop 的 `settings-resources-proxies` 写宿主机的 IP（就是宿主机以太网下的本地 IPv4 地址）。（感谢 [@RAINighty](https://github.com/RAINighty) 提供的解决方案，详见 https://github.com/cdfmlr/muvtuber/issues/30 的讨论）
 
 ## 配置开发环境
 
@@ -298,7 +374,7 @@ go run . -c config.yaml
 # 不开发该模块也可以 build 出来再运行
 ```
 
-8. OBS
+10. OBS
 
 ```sh
 brew install obs
@@ -315,70 +391,27 @@ brew install obs
 
 > 使用前文的 docker compose 方式部署。不再提供散装微服务的部署文档了。
 
-## Troubleshooting  
-
-### docker compose up 构建 musharing_chatbot 镜像时 ProxyError
-
-如果出现 ProxyError，或者：
-
-- Cannot connect to proxy.
-- Name or service not known.
-
-需要修改 `musharing_chatbot/Dockerfile` 中的代理设置。
-
-```docker
-# TODO: modify port 1000 to your own port to your local proxy
-RUN	HTTPS_PROXY=http://host.docker.internal:1000 poetry run python -m spacy download en_core_web_sm
-```
-
-这个东西必须访问 GitHub，如果你的网络环境不允许直接访问 GitHub，可以使用代理。如果你可以直接访问 GitHub（你用旁路由也算），可以删除 `HTTPS_PROXY=http://host.docker.internal:1000`。
-
-### 启动后 chatgpt_chatbot 一直出现网络问题
-
-查看日志发现：
-
-```
-...
-muvtuber-chatgpt_chatbot-1    |     raise ProxyError(e, request=request)
-muvtuber-chatgpt_chatbot-1    | requests.exceptions.ProxyError: HTTPSConnectionPool(host='openaipublic.blob.core.windows.net', port=443): Max retries exceeded with url: /encodings/cl100k_base.tiktoken (Caused by ProxyError('Cannot connect to proxy.', NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f968bfdbac0>: Failed to establish a new connection: [Errno -2] Name or service not known')))
-```
-
-需要在 `docker-compose.yml` 中修改代理配置：
-
-```yaml
-  chatgpt_chatbot:
-    ...
-    environment:
-      - HTTP_PROXY=http://host.docker.internal:10809
-      - HTTPS_PROXY=http://host.docker.internal:10809
-```
-
-如果你的网络环境不允许直接访问 OpenAI 的 API，可以使用代理。如果你可以直接访问 ChatGPT（你用旁路由也算），需要删除两行配置。
-
-如果配置后，仍然有 `Name or service not known` 的错误，可以尝试通过 Docker Desktop 的 `settings-resources-proxies` 写宿主机的 IP（就是宿主机以太网下的本地 IPv4 地址）。（感谢 [@RAINighty](https://github.com/RAINighty) 提供的解决方案，详见 https://github.com/cdfmlr/muvtuber/issues/30 的讨论）
-
 ## FAQ
 
-我（个人/商业/以及任意情况）可以使用这个项目嘛？
+**我（个人/商业/以及任意情况）可以使用这个项目嘛？**
 
 - 可以。在 MIT 协议下开放源代码，没有任何限制。
   - Permissions：✅ Commercial use ✅ Modification ✅ Distribution ✅ Private use
   - Limitations：❌ Liability ❌ Warranty
 
-在 Microsoft Windows 系统中可以运行嘛？
+**在 Microsoft Windows 系统中可以运行嘛？**
 
 - 可以。v0.3.0 完成了完全 Docker 化，只要宿主机能装 docker 就行：所有服务都跑在容器中，所有客户端都是浏览器（可以嵌入 OBS）。
 
-作者寻求合作嘛？
+**作者寻求合作嘛？**
 
-- TL;DR：可白嫖，不合作（你给我钱，我给你代码），欢迎贡献（你无条件给我/这个项目钱/代码）
-- 你想用我的实现：请直接使用，直接白嫖，不用找我谈钱，我不需要。这是个在 MIT 协议下的开源项目。你可以自由、免费使用我已有的实现，以及未来的任何更新。
-- 你想要我实现某种功能：请于 issue 里提出，大家一起讨论、实现。时间精力有限，我不保证能实现，如果你有能力实现，欢迎贡献代码。
-- 你给我钱做某种商用产品（包括但不限于去某平台直播、做广告or带货数字人）：请参考上面两种情况。我不缺钱，我只缺时间。
-- 你要无条件给我钱：如果你想赞助，我非常欢迎。
-- 你要一起写代码：非常欢迎，请于 issue 里自行承包 TODO 或者提出想法。请务必不要被项目复杂度吓到，单独每个模块不难的，我也会尽力帮助你的。
+- ✅ 你要和我一起写代码（贡献）
+- ✅ 你要给我钱让我写我想写的东西（捐赠）
+- ❌ 你要给我钱让我写你想要的东西（外包）
+  - 非常抱歉，我的时间精力和能力有限。
 
-为何如此复杂？|| 这个项目的意义是什么？
+
+**为何如此复杂？|| 这个项目的意义是什么？**
 
 - 我自己都觉得复杂。但这是刻意为之的，用来自己的走出舒适区。这是个学习项目，为磨练技术而生。她充满了探索，而没有明确的目标。它不是用来赚钱的工具，亦不是用来娱乐的玩具。
 - 在**机器学习**方面：用来学习包括但不限于 AIGC 等技术（实用技术，从模型到服务的，真正有用的，不是只能躺在 Jupiter Notebook 里的 demo）虽然现在都是调 API，但我也有在研究自己做模型......
@@ -411,6 +444,7 @@ muvtuber-chatgpt_chatbot-1    | requests.exceptions.ProxyError: HTTPSConnectionP
 所有下属项目除非特别说明，一律在 MIT 协议下开放源代码。
 
 欢迎任何有关 Issue 问题、PR 贡献以及讨论。
+
 
 
 
