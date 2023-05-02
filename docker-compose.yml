@@ -1,7 +1,7 @@
 version: '3'
 services:
   blivechat:
-    image: cdfmlr/muvtuber-blivechat:v1.6.1-muvtb.2
+    image: cdfmlr/muvtuber-blivechat:v1.6.1-muvtb.4
     build: ./blivechat/
     ports:
       - "51060:12450"
@@ -37,7 +37,7 @@ services:
       - "51051:50051"
     restart: unless-stopped
   live2ddriver:
-    image: cdfmlr/muvtuber-live2ddriver:v0.0.2
+    image: cdfmlr/muvtuber-live2ddriver:v0.0.3
     build: ./live2ddriver/
     ports:
       - "51071:9001"
@@ -49,7 +49,7 @@ services:
       - emotext
     restart: unless-stopped
   live2dview:
-    image: cdfmlr/muvtuber-live2dview:v0.0.1
+    image: cdfmlr/muvtuber-live2dview:v0.0.3
     build: ./live2dview/
     ports:
       - "51070:80"
