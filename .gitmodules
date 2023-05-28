@@ -1,6 +1,6 @@
 [submodule "emotext"]
 	path = emotext
-	url = https://github.com/cdfmlr/emotext.git
+	url = https://github.com/murchinroom/emotext.git
 [submodule "chatgpt_chatbot"]
 	path = chatgpt_chatbot
 	url = https://github.com/cdfmlr/chatgpt_chatbot.git
