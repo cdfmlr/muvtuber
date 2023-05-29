@@ -69,7 +69,7 @@ services:
       - "51082:80"
     restart: unless-stopped
   muvtuberdriver:
-    image: cdfmlr/muvtuber-muvtuberdriver:v0.0.6
+    image: cdfmlr/muvtuber-muvtuberdriver:v0.0.8
     build: ./muvtuberdriver/
     ports:
       - "51080:51080"
