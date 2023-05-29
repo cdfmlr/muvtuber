@@ -20,7 +20,7 @@ Makes your AI vtuber.
 
 | 服务                                                         | 说明                                                         | 基于                                                         |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| [blivechat](https://github.com/cdfmlr/blivechat/tree/muvtuber) | 获取直播间弹幕消息。                                         | [xfgryujk/blivechat](https://github.com/xfgryujk/blivechat) 做的非常好，直接用了，没有额外封装。 |
+| [blivechat](https://github.com/cdfmlr/blivechat/tree/muvtuber) | 获取直播间弹幕消息。                                         | [xfgryujk/blivechat](https://github.com/xfgryujk/blivechat) |
 | [Live2dView](https://github.com/cdfmlr/live2dview)           | 前端：显示 [Live2D](https://www.live2d.com/en/) 模型         | [guansss/pixi-live2d-display](https://github.com/guansss/pixi-live2d-display) |
 | [Live2dDriver](https://github.com/cdfmlr/live2ddriver)       | 驱动前端 Live2D 模型动作表情                                 | -                                                            |
 | [ChatGPTChatbot](https://github.com/cdfmlr/chatgpt_chatbot)  | 基于 [ChatGPT](https://chat.openai.com) 的优质聊天机器人     | [acheong08/ChatGPT](https://github.com/acheong08/ChatGPT)    |
@@ -29,7 +29,15 @@ Makes your AI vtuber.
 | [externalsayer](https://github.com/cdfmlr/externalsayer)     | 调用公开的 API （external API）进行 TTS 文本语音合成。       | [Azure: TTS](https://azure.microsoft.com/zh-cn/products/cognitive-services/text-to-speech/) |
 | [audioview](https://github.com/cdfmlr/audioview)             | 基于 Web 的音频播放。用于从 docker 中输出音频到 OBS          | -                                                            |
 | [muvtuberdriver](https://github.com/cdfmlr/muvtuberdriver)   | 组装各模块，驱动整个流程                                     | -                                                            |
-| [muvtuber-proto](https://github.com/cdfmlr/muvtuber-proto)   | proto 定义                                                   |                                                              |
+
+非服务模块：
+
+| 模块 | 说明 |
+| ---- | ---- |
+| [muvtuber-proto](https://github.com/cdfmlr/muvtuber-proto)   | proto 定义                             |
+| [sayerapigo](https://github.com/murchinroom/sayerapigo) | Go 语言的 Sayer (TTS) 接口服务端+客户端框架 |
+| [chatbotapipy](https://github.com/murchinroom/chatbotapipy) | Python 语言的 Chatbot API 服务端框架    |
+
 
 ## 快速开始
 
