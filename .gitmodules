@@ -31,3 +31,6 @@
 [submodule "sayerapigo"]
 	path = sayerapigo
 	url = https://github.com/murchinroom/sayerapigo.git
+[submodule "chatbotapipy"]
+	path = chatbotapipy
+	url = https://github.com/murchinroom/chatbotapipy.git
