@@ -55,7 +55,7 @@ services:
       - "51070:80"
     restart: unless-stopped
   externalsayer:
-    image: cdfmlr/muvtuber-externalsayer:v0.0.2
+    image: cdfmlr/muvtuber-externalsayer:v0.0.3
     build: ./externalsayer/
     ports:
       - "51065:50010"
@@ -69,7 +69,7 @@ services:
       - "51082:80"
     restart: unless-stopped
   muvtuberdriver:
-    image: cdfmlr/muvtuber-muvtuberdriver:v0.0.9
+    image: cdfmlr/muvtuber-muvtuberdriver:v0.0.10
     build: ./muvtuberdriver/
     ports:
       - "51080:51080"
