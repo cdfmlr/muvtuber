@@ -28,3 +28,6 @@
 [submodule "audioview"]
 	path = audioview
 	url = https://github.com/cdfmlr/audioview.git
+[submodule "sayerapigo"]
+	path = sayerapigo
+	url = https://github.com/murchinroom/sayerapigo.git
