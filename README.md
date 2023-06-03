@@ -25,7 +25,7 @@ Makes your AI vtuber.
 | [Live2dDriver](https://github.com/cdfmlr/live2ddriver)       | 驱动前端 Live2D 模型动作表情                                 | -                                                            |
 | [ChatGPTChatbot](https://github.com/cdfmlr/chatgpt_chatbot)  | 基于 [ChatGPT](https://chat.openai.com) 的优质聊天机器人     | [acheong08/ChatGPT](https://github.com/acheong08/ChatGPT)    |
 | [MusharingChatbot](https://github.com/cdfmlr/musharing_chatbot) | 基于 [ChatterBot](https://github.com/gunthercox/ChatterBot) 的简单聊天机 | [RaSan147/ChatterBot_update](https://github.com/RaSan147/ChatterBot_update) <br/> [musharing-team/chatbot_api](https://github.com/musharing-team/chatbot_api) |
-| [Emotext](https://github.com/cdfmlr/emotext)                 | 中文文本情感分析                                             | [cdfmlr/murecom-verse-1](https://github.com/cdfmlr/murecom-verse-1) |
+| [Emotext](https://github.com/murchinroom/emotext)                 | 中文文本情感分析                                             | [cdfmlr/murecom-verse-1](https://github.com/cdfmlr/murecom-verse-1) |
 | [externalsayer](https://github.com/cdfmlr/externalsayer)     | 调用公开的 API （external API）进行 TTS 文本语音合成。       | [Azure: TTS](https://azure.microsoft.com/zh-cn/products/cognitive-services/text-to-speech/) |
 | [audioview](https://github.com/cdfmlr/audioview)             | 基于 Web 的音频播放。用于从 docker 中输出音频到 OBS          | -                                                            |
 | [muvtuberdriver](https://github.com/cdfmlr/muvtuberdriver)   | 组装各模块，驱动整个流程                                     | -                                                            |
@@ -53,9 +53,9 @@ git clone --recursive https://github.com/cdfmlr/muvtuber.git
 cd muvtuber
 ```
 
-⚠️ 由于使用了 git 子模块，一定要递归拉取，不能下载 zip，或不带 `--recursive` 参数的 clone。
+⚠️  由于使用了 git 子模块，一定要递归拉取。不能下载 zip，或不带 `--recursive` 参数的 clone。
 
-🚧 默认的 main 分支是开发中的最新版本，不保证能运行。请使用打了 tag 个版本。（今天有点忙，有时间再写详细教程哈。如果你会的话，可以帮我修改，直接 PR 就行。）
+🚧 默认的 main 分支是开发中的最新版本，不保证能运行。请使用打了 tag 个版本：[点这里](https://github.com/cdfmlr/muvtuber/tags)。
 
 2. 修改配置：（详见 [配置详解](#配置详解)）
 
@@ -77,15 +77,20 @@ vim configs/muvtuberdriver/config.yaml
 3. 启动服务：
 
 ```sh
-# 启动各种服务
-# 首次运行需要 build 各种镜像，耗时较长，并且请确保网络能够访问 Docker Hub、GitHub （我已尽量写了使用国内源，但不保没有遗漏）
-# 之后我可能会把打包好的镜像上传，到时候直接 pull 就行了。
-docker compose up -d
+docker compose up -d      # 自动下载或构建、启动各种服务
+
 # docker compose ps       # 查看服务状态
 # docker compose logs -f  # 查看日志（Ctrl+C 停止）
 ```
 
-（如果遇到问题，可以先看一看 [Troubleshooting](#Troubleshooting)）
+- 可以直接从 Docker Hub 拉取镜像啦 🎉
+    - 在 v0.3.5 中，加入了 CI 机制。所有 Docker 镜像均由 GitHub Actions 自动构建，并推送到 Docker Hub （ [murchinroom/xxx](https://hub.docker.com/u/murchinroom)）。
+    - 镜像较多，请保持网络通畅。在较差的网络情况下测试（校园网直连 Docker Hub），需要约 252.4s 拉取全部镜像。
+- 亦可在本地自行构建各种镜像：
+    - 请确保网络环境能访问 Docker Hub 和 GitHub.
+    - 在中国大陆或其他网络环境受限的地区，请使用 `Dockerfile`。其他地区推荐使用 `gh.Dockerfile`。
+- 请保证至少有 1 GB 可用硬盘空间。
+- 如果遇到问题，可以先看一看 [Troubleshooting](#Troubleshooting)。
 
 4. 配置 OBS，开始直播：（下面三个都是新建浏览器源）
    - 主播 Live2DView：`http://localhost:51070/#/?driver=ws://localhost:51071/live2d`
