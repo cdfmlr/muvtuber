@@ -1,4 +1,4 @@
-SrvAddr: "localhost:50010"
+SrvAddr: "0.0.0.0:50010"
 EnabledSayer: "azure"
 AzureSayer:
   SpeechKey: "your-key"

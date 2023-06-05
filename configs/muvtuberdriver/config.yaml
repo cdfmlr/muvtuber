@@ -21,7 +21,7 @@ chatbot:
         disabled: false
 sayer:
     server: externalsayer:50010
-    role: miku
+    role: default
 listen:
     textinhttp: 0.0.0.0:51080
     audiocontrollerws: 0.0.0.0:51081
