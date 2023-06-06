@@ -1,5 +1,8 @@
 (translation in progress)
+
 # muvtuber
+
+[中文文档](README.md)
 
 Makes your AI vtuber.
 
@@ -9,7 +12,7 @@ Makes your AI vtuber.
 
 - Test live: http://live.bilibili.com/26949229
 - QQ exchange group: 569686683
-- Introductory article: [Zhihu - Write an AI virtual anchor: understand the barrage, witty words, sorrow and joy, in a simple implementation] (https://zhuanlan.zhihu.com/p/609878670)
+- Introductory article: [Zhihu - Write an AI virtual anchor: understand the barrage, witty words, sorrow and joy, in a simple implementation](https://zhuanlan.zhihu.com/p/609878670)
 - We're currently developing this project for the Chinese Bilibili platform. We're still working on integrating it with YouTube, Twitch, and other platforms. Stay tuned for updates, and we welcome your contributions.
 
 [TOC]

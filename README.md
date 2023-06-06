@@ -1,5 +1,7 @@
 # muvtuber
 
+[README in English](README-EN.md)
+
 Makes your AI vtuber.
 
 > 让 AI 成为虚拟主播：看懂弹幕，妙语连珠，悲欢形于色，以一种简单的实现
