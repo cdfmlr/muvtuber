@@ -104,33 +104,34 @@ docker compose up -d      # 自动下载或构建、启动各种服务
 
 ### 网络环境配置
 
+If you can access ChatGPT (api.openai.com) directly, please remove all lines about `HTTP(S)_PROXY` in the `doccker-compose.yml` and skip following steps.
+
 如果你的网络环境不好，直连 GitHub 和 ChatGPT 有困难，就需要做一些代理配置。
 
 > 预先条件：你拥有一个可以让网络变好的魔法道具（行业黑话：代理）。
 
-在你的代理设置中（可能还藏的比较深，如高级设置中），可以找到类似「本机 http 监听端口」之类的值，把这个端口填到：
+在你的代理设置中（可能还藏的比较深，如高级设置中），可以找到类似「本机 http 监听端口」之类的值，下面假设这个值为 `http://0.0.0.0:1000`。
 
-- `musharing_chatbot/Dockerfile` 中：
+接下来根据你的实际情况：
 
-  ```dockerfile
-  HTTPS_PROXY=http://host.docker.internal:1000
-  ```
+1. 你使用 Docker Desktop：
+   - 在 Docker Desktop 里 Settings -> Resources -> Proxies 设置代理地址（宿主机以太网下的本地 IPv4 地址+代理软件设置的端口）
+   - 把 `doccker-compose.yml` 文件中的有关 proxy 的内容注释掉或删除。
+   
+   （这个方法在 Windows 和 macOS 下验证可用，详见 [#51](https://github.com/cdfmlr/muvtuber/issues/51#issuecomment-1579220195) 和 [#30](https://github.com/cdfmlr/muvtuber/issues/30) 的讨论，感谢 [@RAINighty](https://github.com/RAINighty) 和 [@JackChow6](https://github.com/JackChow6) 的帮助。）
 
-  替换掉 `1000`
+2. 你使用 Docker 服务器环境或 Colima 之类的其他容器运行环境：
+   - `docker-compose.yml` 中：
 
-- `docker-compose.yml` 中：
+   ```yaml
+     chatgpt_chatbot:
+       ...
+       environment:
+         - HTTP_PROXY=http://host.docker.internal:1000
+         - HTTPS_PROXY=http://host.docker.internal:1000
+   ```
 
-  ```yaml
-    chatgpt_chatbot:
-      ...
-      environment:
-        - HTTP_PROXY=http://host.docker.internal:1000
-        - HTTPS_PROXY=http://host.docker.internal:1000
-  ```
-
-  替换掉 `1000`
-
-（当然你也可以反过来，把代理软件的端口改成 1000 哈哈，但不推荐，我怕有冲突，或者给你造成其他问题）
+   请按照自己的实际情况，替换掉端口号 `1000`。也有可能需要将 `host.docker.internal` 修改为容器眼里宿主机的 IP，具体要看你的运行时是否为你提供了一个容器访问宿主的域名或地址。如果你发现操作中有困难无法解决，建议尝试 Docker Desktop。
 
 ### externalsayer 配置详解
 
@@ -192,45 +193,7 @@ curl https://eastus.tts.speech.microsoft.com/cognitiveservices/voices/list --hea
 
 ## Troubleshooting 
 
-### 💥 docker compose up 构建 musharing_chatbot 镜像时 ProxyError
-
-如果出现 ProxyError，或者：
-
-- Cannot connect to proxy.
-- Name or service not known.
-
-需要修改 `musharing_chatbot/Dockerfile` 中的代理设置。
-
-```docker
-# TODO: modify port 1000 to your own port to your local proxy
-RUN	HTTPS_PROXY=http://host.docker.internal:1000 poetry run python -m spacy download en_core_web_sm
-```
-
-这个东西必须访问 GitHub，如果你的网络环境不允许直接访问 GitHub，可以使用代理。如果你可以直接访问 GitHub（你用旁路由也算），可以删除 `HTTPS_PROXY=http://host.docker.internal:1000`。
-
-### 💥 启动后 chatgpt_chatbot 一直出现网络问题
-
-查看日志发现：
-
-```
-...
-muvtuber-chatgpt_chatbot-1    |     raise ProxyError(e, request=request)
-muvtuber-chatgpt_chatbot-1    | requests.exceptions.ProxyError: HTTPSConnectionPool(host='openaipublic.blob.core.windows.net', port=443): Max retries exceeded with url: /encodings/cl100k_base.tiktoken (Caused by ProxyError('Cannot connect to proxy.', NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f968bfdbac0>: Failed to establish a new connection: [Errno -2] Name or service not known')))
-```
-
-需要在 `docker-compose.yml` 中修改代理配置：
-
-```yaml
-  chatgpt_chatbot:
-    ...
-    environment:
-      - HTTP_PROXY=http://host.docker.internal:10809
-      - HTTPS_PROXY=http://host.docker.internal:10809
-```
-
-如果你的网络环境不允许直接访问 OpenAI 的 API，可以使用代理。如果你可以直接访问 ChatGPT（你用旁路由也算），需要删除两行配置。
-
-如果配置后，仍然有 `Name or service not known` 的错误，可以尝试通过 Docker Desktop 的 `settings-resources-proxies` 写宿主机的 IP（就是宿主机以太网下的本地 IPv4 地址）。（感谢 [@RAINighty](https://github.com/RAINighty) 提供的解决方案，详见 https://github.com/cdfmlr/muvtuber/issues/30 的讨论）
+暂无。
 
 ## 配置开发环境
 
@@ -402,6 +365,23 @@ brew install obs
 # - 音频（say）的输出：你使用的音频设备
 # 【开始直播】
 ```
+
+### 本地构建镜像
+
+> 从 v0.3.5 开始，本项目各个服务模块均采用 GitHub Actions 自动完成镜像构建、推送，终端用户直接从 Docker Hub 拉取镜像即可。
+
+如果出于开发或其他理由，需要手动构建镜像的话：
+
+```sh
+cd muvtuberdriver   # 或其他服务
+docker build -t cdfmlr/muvtuber-muvtuberdriver:v0.0.12-alpha.0 .
+```
+
+- ⚠️ The default `Dockerfile` is designed for Chinese mainland users. Please use `gh.Dockerfile` instead if you are in other regions.
+- 💥 构建 musharing_chatbot 镜像时如果出现 ProxyError，或者 `Cannot connect to proxy: Name or service not known.`，之类的网络代理问题，请参考 [#网络环境配置] 修改 musharing_chatbot/Dockerfile 中的代理设置。这个东西必须访问 GitHub，如果你的网络环境不允许直接访问 GitHub，可以使用代理。
+
+
+然后在 `docker-compose.yml` 里将对应镜像修改成新构建镜像的 tag 即可。
 
 ## 部署
 
