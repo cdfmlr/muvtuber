@@ -16,7 +16,7 @@ services:
       - "51061:9003"
     restart: unless-stopped
   chatgpt_chatbot:
-    image: murchinroom/chatgpt_chatbot:v0.0.3
+    image: murchinroom/chatgpt_chatbot:v0.0.4
     build: ./chatgpt_chatbot/
     ports:
       - "51052:50052"
