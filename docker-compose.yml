@@ -24,11 +24,17 @@ services:
       - 1.1.1.1
       - 8.8.8.8
     environment:
-      # 本地代理的地址：需要根据每个人的情况具体设置
-      # host.docker.internal 是 docker desktop 默认带有的访问宿主机的域名，
-      # 但不一定有效，例如我的 docker vm 访问宿主机的 ip 需要用 192.168.5.2
-      - HTTP_PROXY=http://host.docker.internal:1000
-      - HTTPS_PROXY=http://host.docker.internal:1000
+      ## ChatGPTChatbot <--> HTTP Proxy <--> Chat API
+      ##
+      ## HTTP 代理的地址：
+      ## host.docker.internal 是 docker desktop 默认带有的访问宿主机的域名，
+      ## 但不一定有效，例如我的 docker vm 访问宿主机的 ip 需要用 192.168.5.2
+      #- HTTP_PROXY=http://host.docker.internal:1080
+      #- HTTPS_PROXY=http://host.docker.internal:1080
+      #
+      ## API_URL 是类 ChatGPT 接口的地址，默认是 openai 官方接口。
+      ## 可以替换成任何其他兼容的、或代理的接口。
+      - API_URL=https://api.openai.com/v1/chat/completions
     restart: unless-stopped
   musharing_chatbot:
     image: murchinroom/musharing_chatbot:v0.0.3

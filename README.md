@@ -64,8 +64,7 @@ cd muvtuber
 
 ```sh
 vim docker-compose.yml
-# 按照你的实际情况修改 HTTP_PROXY、HTTPS_PROXY 的值
-# 如果不需要，直接删掉就行。
+# 按照你的实际情况修改 HTTP_PROXY、HTTPS_PROXY、API_URL 的配置
 
 vim configs/externalsayer/config.yaml
 # 配置 TTS 文本语音合成: 
@@ -87,7 +86,7 @@ docker compose up -d      # 自动下载或构建、启动各种服务
 ```
 
 - 可以直接从 Docker Hub 拉取镜像啦 🎉
-    - 在 v0.3.5 中，加入了 CI 机制。所有 Docker 镜像均由 GitHub Actions 自动构建，并推送到 Docker Hub （ [murchinroom/xxx](https://hub.docker.com/u/murchinroom)）。
+    - 在 v0.3.5 中，加入了 CI 机制。所有 Docker 镜像均由 GitHub Actions 自动构建，并推送到 Docker Hub （所有镜像都在 [murchinroom](https://hub.docker.com/u/murchinroom) 名下）。
     - 镜像较多，请保持网络通畅。在较差的网络情况下测试（校园网直连 Docker Hub），需要约 252.4s 拉取全部镜像。
 - 亦可在本地自行构建各种镜像：
     - 请确保网络环境能访问 Docker Hub 和 GitHub.
@@ -102,11 +101,37 @@ docker compose up -d      # 自动下载或构建、启动各种服务
 
 ## 配置详解
 
-### 网络环境配置
+### ChatGPT 配置
 
-If you can access ChatGPT (api.openai.com) directly, please remove all lines about `HTTP(S)_PROXY` in the `doccker-compose.yml` and skip following steps.
+你可以为 ChatGPTChatbot 配置替代的 Chat API 和 HTTP 代理。其关系如下：
 
-如果你的网络环境不好，直连 GitHub 和 ChatGPT 有困难，就需要做一些代理配置。
+```
+ChatGPTChatbot <--> HTTP Proxy <--> Chat API
+                    默认: 无        默认: api.openai.com
+```
+
+#### Use an alternative Chat API
+
+ChatGPTChatbot 默认使用 OpenAI 的 Chat 接口: `https://api.openai.com/v1/chat/completions` （[接口文档](https://platform.openai.com/docs/api-reference/chat)）
+
+但也支持使用任何*类似 ChatGPT*的 API 接口。所以你可以使用一些本地的模型（例如 GPT4All）或者一些代理 OpenAI 的服务。
+
+如果要使用这种替代接口，请修改 `docker-compose.yml`：
+
+```yaml
+ chatgpt_chatbot:
+   ...
+   environment:
+     - API_URL=https://api.openai.com/v1/chat/completions
+```
+
+将 `API_URL` 替换为你的 API 端点。
+
+#### Use a HTTP Proxy
+
+If you can access ChatGPT (api.openai.com) directly, please remove all lines about `HTTP(S)_PROXY` in the `docker-compose.yml` and skip following steps.
+
+如果你的网络环境不好，直连 ChatGPT 或你配置的替代 Chat API 服务有困难，就需要做一些代理配置。
 
 > 预先条件：你拥有一个可以让网络变好的魔法道具（行业黑话：代理）。
 
