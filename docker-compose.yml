@@ -43,7 +43,7 @@ services:
       - "51051:50051"
     restart: unless-stopped
   live2ddriver:
-    image: murchinroom/live2ddriver:v0.0.4
+    image: murchinroom/live2ddriver:v0.1.0
     build: ./live2ddriver/
     ports:
       - "51071:9001"
@@ -55,7 +55,7 @@ services:
       - emotext
     restart: unless-stopped
   live2dview:
-    image: murchinroom/live2dview:v0.0.5
+    image: murchinroom/live2dview:v0.1.0
     build: ./live2dview/
     ports:
       - "51070:80"
@@ -69,13 +69,13 @@ services:
       - ./configs/externalsayer:/app/config
     restart: unless-stopped
   audioview:
-    image: murchinroom/audioview:v0.0.2
+    image: murchinroom/audioview:v0.1.0
     build: ./audioview/
     ports:
       - "51082:80"
     restart: unless-stopped
   muvtuberdriver:
-    image: murchinroom/muvtuberdriver:v0.0.11
+    image: murchinroom/muvtuberdriver:v0.1.0
     build: ./muvtuberdriver/
     ports:
       - "51080:51080"
