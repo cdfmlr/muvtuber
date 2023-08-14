@@ -72,7 +72,8 @@ vim configs/externalsayer/config.yaml
 
 vim configs/muvtuberdriver/config.yaml
 # 主程序的配置:
-# 你的房间号（roomid）、ChatGPT 的 apiKey 以及 initialprompt.
+#  你的房间号（roomid）、ChatGPT 的 apiKey 以及 initialprompt.
+#  口型同步的策略：lipsyncstrategy
 # 各种 server 的地址都不用改，已经配合 docker-compose.yml 设好了.
 ```
 
@@ -194,6 +195,22 @@ curl https://eastus.tts.speech.microsoft.com/cognitiveservices/voices/list --hea
 你可以在网页上的「[Speech Studio](https://aka.ms/speechstudio/voicegallery)」里试听、选择声音。然后在文件里找到对应 voice 的 `"ShortName": "xx-XX-Xxx"` 填写到 `<voice name="xx-XX-Xxx">`。
 
 🌟 更推荐的一种方式是，在「[Speech Studio](https://aka.ms/speechstudio/voicegallery)」中随便写点内容，选择声音让它说，并微调各种参数，满意之后，把 SSML 导出出来，把内容替换为 `{{.}}`，去掉换行（我写了个脚本帮助做这件事，[可以点这里找到](https://github.com/cdfmlr/externalsayer/tree/23e32a07de224d6ac19cf3aee0575a3e81e9836a/azuresayer/voices)）写到配置里。
+
+### 口型同步
+
+有三种 Live2D 口型同步策略可选：
+
+- `audio_analyze`: 基于音频分析的口型同步。此法对 Live2D 模型的要求更少，更加通用，推荐。
+- `keep_motion`: 在说话期间反复播放预制 live2d 动作，以达到类似“说话”的效果。此法要求预先为模型制作一些“说话”的 motion。
+- `none`: 不进行口型同步。
+
+在配置文件 `configs/muvtuberdriver/config.yaml` 中进行配置，从上述种策略中任选一个作为 `sayer` 下面的 `lipsyncstrategy` 的值：
+
+```yaml
+sayer:
+    ...
+    lipsyncstrategy: audio_analyze
+```
 
 ###  OBS 配置详解
 
