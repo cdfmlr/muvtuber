@@ -237,6 +237,65 @@ sayer:
 
 暂无。
 
+## API 调用
+
+有的时候，可能希望人工介入运行流程。比如测试时，没开直播，就读不到弹幕，但是希望能触发对话。
+这时就可以通过 API 介入。
+
+常用 API：
+
+- 输入对话（相当于后台发虚空弹幕）：
+
+```sh
+$ curl -X POST localhost:51080 --data '{"author": "tester", "content": "主包，讲个地狱数学笑话喵"}' -i
+
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Tue, 27 Aug 2024 13:13:52 GMT
+Content-Length: 15
+
+{"status":"ok"}
+```
+
+- 触发 Live2D 动作：
+
+```sh
+$ curl -X POST localhost:51072/live2d -H 'Content-Type: application/json' --data '{"motion": "tap_body"}' -i
+
+HTTP/1.1 200 OK
+Date: Tue, 27 Aug 2024 13:14:28 GMT
+Content-Length: 0
+```
+
+- 触发 Live2D 说话口型（与给定音频）同步：
+
+```sh
+$ curl -X POST localhost:51072/live2d -H 'Content-Type: application/json' -d '{"speak": {"audio": "https://cdn.jsdelivr.net/gh/RaSan147/pixi-live2d-display@v1.0.3/playground/test.mp3"}}' -i
+
+HTTP/1.1 200 OK
+Date: Tue, 27 Aug 2024 13:16:27 GMT
+Content-Length: 0
+```
+
+- 调用 Chatbot：(详见 [chatgpt chatbot 的 README](https://github.com/cdfmlr/chatgpt_chatbot/tree/6291d9cc4fbb0d70c95aeaa0283711e8f7d0252e?tab=readme-ov-file#请求))：
+
+```sh
+grpcurl -d '...' -plaintext localhost:51052 ...
+```
+
+- 调用 TTS：（注意这个会返回输出完整 base64 编码的音频二进制到标准输出，慎用！）
+
+```sh
+$ grpcurl -d '{"role": "xiao", "text": "test"}' -plaintext localhost:51065  muvtuber.sayer.v1.SayerService.Say
+
+{
+  "format": "mp3",
+  "audio": "//NIxAA....一..大..段..人..类..不..可..睹..的..东..西..qqqqqqqqq"
+}
+```
+
+（好像常用的也就这些了，其他暂时没想到，旧酱。）
+
 ## 配置开发环境
 
 目前仍不支持用 docker 作为开发环境。需要在本地开发，然后 docker 构建部署。
